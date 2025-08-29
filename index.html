@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Tools for L&D - Canada Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* General Styles & Typography */
+      :root {
+        --cl-red: #dc143c;
+        --cl-dark-red: #b91c1c;
+        --cl-blue: #0b1a41;
+        --cl-light-blue: #e0e9ff;
+        --cl-grey: #6b7280;
+        --cl-light-grey: #f8fafc;
+        --cl-bg-gradient: linear-gradient(135deg, #f0f4f8 0%, #dbe3eb 100%);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--cl-bg-gradient);
+        min-height: 100vh;
+        line-height: 1.6;
+        color: #333;
+        transition: background-color 0.3s ease;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(
+          135deg,
+          var(--cl-red) 0%,
+          var(--cl-dark-red) 100%
+        );
+        color: white;
+        text-align: center;
+        padding: 3rem 1rem;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        border-bottom-left-radius: 40px;
+        border-bottom-right-radius: 40px;
+      }
+
+      .header h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 0.5rem;
+        font-weight: 700;
+      }
+
+      .header p {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        opacity: 0.9;
+      }
+
+      .canada-life-logo {
+        display: inline-block;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        color: white;
+        padding: 0.5rem 1.5rem;
+        border-radius: 25px;
+        margin-top: 1rem;
+        font-weight: 600;
+        font-size: 1rem;
+        text-transform: uppercase;
+      }
+
+      /* Main Container & Controls */
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem 1rem;
+      }
+
+      .controls {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .search-box {
+        flex: 1;
+        min-width: 250px;
+        padding: 0.8rem 1.2rem;
+        border: 2px solid #e5e7eb;
+        border-radius: 25px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+      }
+
+      .search-box:focus {
+        outline: none;
+        border-color: var(--cl-red);
+        box-shadow: 0 0 0 4px rgba(220, 20, 60, 0.1);
+      }
+
+      .filter-buttons {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn,
+      #randomToolBtn {
+        padding: 0.6rem 1.2rem;
+        border: 2px solid var(--cl-red);
+        background: white;
+        color: var(--cl-red);
+        border-radius: 25px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: 600;
+      }
+
+      .filter-btn.active,
+      .filter-btn:hover,
+      #randomToolBtn:hover {
+        background: var(--cl-red);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+      }
+
+      #randomToolBtn {
+        background: var(--cl-blue);
+        color: white;
+        border-color: var(--cl-blue);
+      }
+      #randomToolBtn:hover {
+        background: #08122d;
+        border-color: #08122d;
+        box-shadow: 0 4px 15px rgba(11, 26, 65, 0.3);
+      }
+
+      /* Tool Grid & Cards */
+      .tools-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+        transition: all 0.5s ease;
+      }
+
+      .tool-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .tool-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--cl-red), var(--cl-dark-red));
+        transition: all 0.3s ease;
+      }
+
+      .tool-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        border-color: var(--cl-red);
+      }
+
+      .tool-card.featured {
+        background: linear-gradient(
+          135deg,
+          var(--cl-red) 0%,
+          var(--cl-dark-red) 100%
+        );
+        color: white;
+        transform: scale(1.03);
+        animation: pulse 2s infinite ease-in-out;
+      }
+
+      .tool-card.featured::before {
+        background: linear-gradient(90deg, #ffd700, #ff6b6b);
+        height: 6px;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1.03);
+          box-shadow: 0 20px 40px rgba(220, 20, 60, 0.3);
+        }
+        50% {
+          transform: scale(1.04);
+          box-shadow: 0 25px 50px rgba(220, 20, 60, 0.4);
+        }
+        100% {
+          transform: scale(1.03);
+          box-shadow: 0 20px 40px rgba(220, 20, 60, 0.3);
+        }
+      }
+
+      .tool-card.featured .tool-icon {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+      }
+
+      .tool-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        color: var(--cl-blue);
+      }
+
+      .tool-card.featured .tool-title {
+        color: white;
+      }
+
+      .tool-description,
+      .use-cases li {
+        color: var(--cl-grey);
+        font-size: 1rem;
+      }
+
+      .tool-card.featured .tool-description,
+      .tool-card.featured .use-cases li {
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      .use-cases h4 {
+        color: var(--cl-red);
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        font-weight: 700;
+      }
+
+      .tool-card.featured .use-cases h4 {
+        color: rgba(255, 255, 255, 0.95);
+      }
+
+      .tool-link {
+        background: var(--cl-red);
+        color: white;
+        font-weight: 600;
+        text-decoration: none;
+      }
+
+      .tool-link:hover {
+        background: var(--cl-dark-red);
+      }
+
+      .tool-card.featured .tool-link {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .tool-card.featured .tool-link:hover {
+        background: rgba(255, 255, 255, 0.3);
+      }
+
+      .category-tag {
+        background: var(--cl-light-blue);
+        color: var(--cl-blue);
+      }
+
+      .tool-card.featured .category-tag {
+        background: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+      }
+
+      /* Footer */
+      .footer {
+        text-align: center;
+        padding: 3rem 1rem;
+        background: white;
+        border-top-left-radius: 20px;
+        border-top-right-radius: 20px;
+        box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.05);
+        margin-top: 4rem;
+      }
+
+      .footer p {
+        font-size: 1rem;
+        color: var(--cl-grey);
+      }
+
+      /* Modal for Tool Details */
+      .modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1000;
+      }
+
+      .modal.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .modal-content {
+        background: white;
+        padding: 2.5rem;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        max-width: 600px;
+        width: 90%;
+        position: relative;
+        transform: translateY(-20px);
+        transition: transform 0.3s ease;
+      }
+
+      .modal.open .modal-content {
+        transform: translateY(0);
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1rem;
+        right: 1.5rem;
+        font-size: 2rem;
+        font-weight: 300;
+        color: #ccc;
+        cursor: pointer;
+        line-height: 1;
+      }
+
+      .modal-close:hover {
+        color: #999;
+      }
+
+      #modalTitle {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--cl-red);
+        margin-bottom: 0.5rem;
+      }
+
+      #modalDescription {
+        font-size: 1.1rem;
+        color: #555;
+        margin-bottom: 1rem;
+      }
+
+      #modalUseCases h4 {
+        color: var(--cl-blue);
+        font-size: 1.2rem;
+        margin-top: 1.5rem;
+        margin-bottom: 0.8rem;
+      }
+
+      #modalUseCases ul {
+        list-style: none;
+      }
+
+      #modalUseCases li {
+        font-size: 1rem;
+        color: var(--cl-grey);
+        padding: 0.4rem 0;
+      }
+
+      #modalLink {
+        display: inline-block;
+        margin-top: 2rem;
+        padding: 0.8rem 2rem;
+        background: var(--cl-blue);
+        color: white;
+        text-decoration: none;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+
+      #modalLink:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(11, 26, 65, 0.3);
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .header {
+          padding: 2rem 1rem;
+          border-bottom-left-radius: 20px;
+          border-bottom-right-radius: 20px;
+        }
+        .controls {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .search-box {
+          min-width: auto;
+        }
+        .tools-grid {
+          grid-template-columns: 1fr;
+          gap: 1.5rem;
+        }
+        .modal-content {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="header">
+      <h1>🌟 AI Tools for L&D</h1>
+      <div class="canada-life-logo">Canada Life L&D</div>
+      <p>Your Interactive Guide to AI Tools for Learning & Development</p>
+    </header>
+
+    <div class="container">
+      <div class="controls">
+        <input
+          type="text"
+          class="search-box"
+          placeholder="Search AI tools..."
+          id="searchBox"
+        />
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-category="all">
+            All Tools
+          </button>
+          <button class="filter-btn" data-category="content">
+            Content Creation
+          </button>
+          <button class="filter-btn" data-category="media">
+            Media & Design
+          </button>
+          <button class="filter-btn" data-category="research">
+            Research & Analysis
+          </button>
+          <button class="filter-btn" data-category="audio">
+            Audio Creation
+          </button>
+          <button class="filter-btn" data-category="coding">
+            Code & Development
+          </button>
+        </div>
+        <button id="randomToolBtn">Surprise Me!</button>
+      </div>
+
+      <div class="tools-grid" id="toolsGrid">
+        <!-- Tool Cards are populated here by JavaScript -->
+      </div>
+    </div>
+
+    <!-- Tool Detail Modal -->
+    <div id="toolModal" class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <h2 id="modalTitle"></h2>
+        <p id="modalDescription"></p>
+        <div id="modalUseCases">
+          <h4>L&D Use Cases:</h4>
+          <ul id="modalUseCasesList"></ul>
+        </div>
+        <a id="modalLink" href="#" target="_blank"></a>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p>
+        This guide is a living document, designed to help you discover and
+        leverage the power of AI in your learning initiatives. Explore,
+        experiment, and empower your team.
+      </p>
+      <p>Created by Muhammad Hanif, LLM Engineer, AI-L&D Professional</p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const toolData = [
+          {
+            title: "Claude (Anthropic)",
+            icon: "🤖",
+            category: "content research",
+            description:
+              "Advanced AI assistant for conversational AI, analysis, coding, and creative tasks. Built with Constitutional AI for helpful, harmless, and honest interactions. Excellent for complex reasoning and long-form content.",
+            useCases: [
+              "Create comprehensive training curricula and course structures",
+              "Analyze complex insurance policies and create simplified explanations",
+              "Develop detailed case studies and scenario-based learning",
+              "Generate assessment questions with detailed rubrics",
+              "Create interactive learning experiences and role-play scenarios",
+              "Provide personalized coaching and feedback on training materials",
+            ],
+            link: "https://claude.ai",
+            featured: true,
+          },
+          {
+            title: "ChatGPT",
+            icon: "🗣️",
+            category: "content research",
+            description:
+              "Versatile conversational AI for text generation, coding, analysis, and problem-solving. Great for brainstorming and content creation.",
+            useCases: [
+              "Create training materials and course outlines",
+              "Generate assessment questions and scenarios",
+              "Develop role-playing scripts for insurance scenarios",
+              "Draft policy explanations in simple language",
+            ],
+            link: "https://chat.openai.com",
+          },
+          {
+            title: "Gemini",
+            icon: "💎",
+            category: "content research",
+            description:
+              "Google's advanced AI assistant with multimodal capabilities. Excellent for document analysis, code generation, and complex reasoning tasks.",
+            useCases: [
+              "Analyze and summarize lengthy insurance documents",
+              "Create interactive training quizzes and assessments",
+              "Generate code for custom learning management tools",
+              "Process and interpret training data and feedback",
+            ],
+            link: "https://gemini.google.com",
+          },
+          {
+            title: "SUNO",
+            icon: "🎵",
+            category: "audio media",
+            description:
+              "AI music and audio generation platform. Create custom background music, jingles, and audio content from text prompts.",
+            useCases: [
+              "Create background music for training videos",
+              "Generate audio branding for course modules",
+              "Produce attention-grabbing intro/outro music",
+              "Create memorable audio mnemonics for learning",
+            ],
+            link: "https://suno.ai",
+          },
+          {
+            title: "NotebookLM",
+            icon: "📔",
+            category: "research content",
+            description:
+              "Google's AI research assistant that helps you understand and work with your documents, creating summaries and insights.",
+            useCases: [
+              "Analyze training effectiveness reports and feedback",
+              "Create summaries of complex insurance regulations",
+              "Extract key insights from industry research papers",
+              "Generate study guides from training materials",
+            ],
+            link: "https://notebooklm.google.com",
+          },
+          {
+            title: "Remove.bg",
+            icon: "🖼️",
+            category: "media",
+            description:
+              "AI-powered automatic background removal tool. Perfect for creating professional headshots and clean product images.",
+            useCases: [
+              "Create professional team member photos for training materials",
+              "Prepare clean product images for presentations",
+              "Design consistent visual assets for courses",
+              "Create transparent logos and graphics for overlays",
+            ],
+            link: "https://remove.bg",
+          },
+          {
+            title: "CURSOR",
+            icon: "⌨️",
+            category: "coding",
+            description:
+              "AI-powered code editor that helps write, edit, and understand code with intelligent suggestions and explanations.",
+            useCases: [
+              "Develop custom e-learning platforms and tools",
+              "Create interactive training simulations",
+              "Build automated assessment and grading systems",
+              "Develop data analytics tools for training metrics",
+            ],
+            link: "https://cursor.sh",
+          },
+          {
+            title: "Replit",
+            icon: "🔧",
+            category: "coding",
+            description:
+              "Cloud-based development environment with AI assistance. Build and deploy applications directly in the browser.",
+            useCases: [
+              "Rapidly prototype learning management tools",
+              "Create interactive coding tutorials for tech training",
+              "Build custom training dashboards and analytics",
+              "Develop team collaboration tools for L&D projects",
+            ],
+            link: "https://replit.com",
+          },
+          {
+            title: "TurboScribe",
+            icon: "📝",
+            category: "content",
+            description:
+              "AI transcription service that converts audio and video content into accurate text with speaker identification.",
+            useCases: [
+              "Transcribe training sessions and workshops",
+              "Create searchable text from video content",
+              "Generate meeting notes from L&D planning sessions",
+              "Convert audio interviews into written case studies",
+            ],
+            link: "https://turboscribe.ai",
+          },
+          {
+            title: "Meta AI",
+            icon: "🔵",
+            category: "content research",
+            description:
+              "Meta's AI assistant integrated across Facebook, Instagram, and WhatsApp. Great for content creation and research.",
+            useCases: [
+              "Research social media trends for modern training approaches",
+              "Create engaging social content for internal communications",
+              "Generate ideas for interactive team building activities",
+              "Develop content for company social learning platforms",
+            ],
+            link: "https://ai.meta.com",
+          },
+          {
+            title: "Monica",
+            icon: "🌐",
+            category: "content research",
+            description:
+              "AI assistant that works across websites and browsers. Helps with writing, research, and content creation on any page.",
+            useCases: [
+              "Research and summarize industry articles while browsing",
+              "Generate quick responses to training-related emails",
+              "Create content summaries from web research",
+              "Translate training materials for diverse teams",
+            ],
+            link: "https://monica.im",
+          },
+          {
+            title: "Gamma",
+            icon: "📊",
+            category: "content",
+            description:
+              "AI-powered presentation and document creation. Generate professional presentations from simple prompts with consistent branding.",
+            useCases: [
+              "Rapidly create training presentations",
+              "Generate course modules with consistent branding",
+              "Develop product knowledge slides",
+              "Create interactive learning materials",
+            ],
+            link: "https://gamma.app",
+          },
+          {
+            title: "Perplexity",
+            icon: "🔍",
+            category: "research",
+            description:
+              "AI-powered search engine providing researched answers with cited, verifiable sources. Perfect for fact-checking and research.",
+            useCases: [
+              "Research industry trends for training updates",
+              "Verify insurance regulation changes",
+              "Gather competitive analysis for training content",
+              "Find credible sources for course materials",
+            ],
+            link: "https://perplexity.ai",
+          },
+          {
+            title: "ElevenLabs",
+            icon: "🎙️",
+            category: "media",
+            description:
+              "Advanced AI voice synthesis and cloning platform. Create natural-sounding voiceovers in multiple languages.",
+            useCases: [
+              "Create narrated e-learning modules",
+              "Generate multilingual training content",
+              "Produce consistent voiceovers for video tutorials",
+              "Create audio versions of policy documents",
+            ],
+            link: "https://elevenlabs.io",
+          },
+          {
+            title: "VEED",
+            icon: "🎬",
+            category: "media",
+            description:
+              "AI-powered video editing platform. Create professional videos with automatic subtitles, transitions, and effects.",
+            useCases: [
+              "Create engaging training videos",
+              "Add subtitles and captions automatically",
+              "Produce professional course content",
+              "Edit recorded training sessions",
+            ],
+            link: "https://veed.io",
+          },
+          {
+            title: "Midjourney",
+            icon: "🎨",
+            category: "media",
+            description:
+              "Leading AI image generation from text prompts. Create stunning, professional-quality visuals and artwork.",
+            useCases: [
+              "Generate infographics for insurance concepts",
+              "Create scenario-based imagery for case studies",
+              "Design custom illustrations for presentations",
+              "Produce diverse, inclusive imagery for training materials",
+            ],
+            link: "https://midjourney.com",
+          },
+          {
+            title: "Leonardo.AI",
+            icon: "🖼️",
+            category: "media",
+            description:
+              "AI image generation with fine-tuned control over style, composition, and branding consistency.",
+            useCases: [
+              "Create consistent branded imagery",
+              "Generate specific insurance scenario visuals",
+              "Produce high-quality training illustrations",
+              "Maintain visual consistency across courses",
+            ],
+            link: "https://leonardo.ai",
+          },
+          {
+            title: "Character.ai",
+            icon: "🎭",
+            category: "content",
+            description:
+              "Create and interact with custom AI characters for role-playing and scenario-based training.",
+            useCases: [
+              "Create virtual insurance agents for practice scenarios",
+              "Develop customer personas for training simulations",
+              "Build specialized advisors for different insurance products",
+              "Practice difficult customer conversations",
+            ],
+            link: "https://character.ai",
+          },
+        ];
+
+        const toolsGrid = document.getElementById("toolsGrid");
+        const searchBox = document.getElementById("searchBox");
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        const randomToolBtn = document.getElementById("randomToolBtn");
+        const modal = document.getElementById("toolModal");
+        const modalCloseBtn = document.querySelector(".modal-close");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalDescription = document.getElementById("modalDescription");
+        const modalUseCasesList = document.getElementById("modalUseCasesList");
+        const modalLink = document.getElementById("modalLink");
+
+        let currentFeaturedTool = null;
+
+        // Function to render tool cards
+        const renderTools = (tools) => {
+          toolsGrid.innerHTML = "";
+          tools.forEach((tool) => {
+            const toolCard = document.createElement("div");
+            toolCard.classList.add("tool-card");
+            toolCard.setAttribute("data-category", tool.category);
+            toolCard.setAttribute("data-title", tool.title.toLowerCase());
+
+            if (tool.featured) {
+              toolCard.classList.add("featured");
+              currentFeaturedTool = toolCard;
+            }
+
+            let useCasesHtml = "";
+            tool.useCases.forEach((uc) => {
+              useCasesHtml += `<li>${uc}</li>`;
+            });
+
+            toolCard.innerHTML = `
+                        <div class="category-tag">${
+                          tool.featured
+                            ? "⭐ Featured"
+                            : tool.category
+                                .split(" ")
+                                .map(
+                                  (c) => c.charAt(0).toUpperCase() + c.slice(1)
+                                )
+                                .join(" ")
+                        }</div>
+                        <div class="tool-header">
+                            <div class="tool-icon">${tool.icon}</div>
+                            <div class="tool-title">${tool.title}</div>
+                        </div>
+                        <div class="tool-description">${tool.description}</div>
+                        <div class="use-cases">
+                            <h4>L&D Use Cases:</h4>
+                            <ul>${useCasesHtml}</ul>
+                        </div>
+                        <a href="${
+                          tool.link
+                        }" target="_blank" class="tool-link">Try ${
+              tool.title.split(" ")[0]
+            } →</a>
+                    `;
+
+            toolCard.addEventListener("click", () => {
+              showModal(tool);
+            });
+
+            toolsGrid.appendChild(toolCard);
+          });
+        };
+
+        // Initial render
+        renderTools(toolData);
+
+        // Search and Filter Logic
+        searchBox.addEventListener("input", (e) => {
+          const query = e.target.value.toLowerCase();
+          filterTools(query);
+        });
+
+        filterBtns.forEach((button) => {
+          button.addEventListener("click", () => {
+            filterBtns.forEach((btn) => btn.classList.remove("active"));
+            button.classList.add("active");
+            filterTools(searchBox.value.toLowerCase());
+          });
+        });
+
+        const filterTools = (query) => {
+          const activeCategory = document
+            .querySelector(".filter-btn.active")
+            .getAttribute("data-category");
+          const filteredTools = toolData.filter((tool) => {
+            const matchesCategory =
+              activeCategory === "all" ||
+              tool.category.includes(activeCategory);
+            const matchesSearch =
+              tool.title.toLowerCase().includes(query) ||
+              tool.description.toLowerCase().includes(query) ||
+              tool.category.toLowerCase().includes(query);
+            return matchesCategory && matchesSearch;
+          });
+          renderTools(filteredTools);
+        };
+
+        // Random Tool Logic
+        randomToolBtn.addEventListener("click", () => {
+          const tools = Array.from(
+            document.querySelectorAll(".tool-card:not(.featured)")
+          );
+          if (tools.length === 0) return;
+
+          // Remove existing featured tool if it's not a permanent one
+          if (
+            currentFeaturedTool &&
+            currentFeaturedTool.dataset.title.toLowerCase() !==
+              "claude (anthropic)".toLowerCase()
+          ) {
+            currentFeaturedTool.classList.remove("featured");
+            currentFeaturedTool = null;
+          }
+
+          const randomIndex = Math.floor(Math.random() * tools.length);
+          const randomToolCard = tools[randomIndex];
+
+          // Set new featured tool
+          randomToolCard.classList.add("featured");
+          currentFeaturedTool = randomToolCard;
+
+          // Scroll to the new featured tool
+          randomToolCard.scrollIntoView({
+            behavior: "smooth",
+            block: "center",
+          });
+        });
+
+        // Modal Logic
+        const showModal = (tool) => {
+          modalTitle.textContent = tool.title;
+          modalDescription.textContent = tool.description;
+          modalLink.href = tool.link;
+          modalLink.textContent = `Try ${tool.title.split(" ")[0]} →`;
+
+          modalUseCasesList.innerHTML = "";
+          tool.useCases.forEach((uc) => {
+            const li = document.createElement("li");
+            li.textContent = `• ${uc}`;
+            modalUseCasesList.appendChild(li);
+          });
+
+          modal.classList.add("open");
+        };
+
+        const hideModal = () => {
+          modal.classList.remove("open");
+        };
+
+        modalCloseBtn.addEventListener("click", hideModal);
+        modal.addEventListener("click", (e) => {
+          if (e.target.classList.contains("modal")) {
+            hideModal();
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && modal.classList.contains("open")) {
+            hideModal();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
